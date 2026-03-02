@@ -42,8 +42,8 @@ To use: download the required files for the tool/page you want to make use of (s
 
 Sign-On Page is a bit special. It is primarily used as it's own page rather than through an iFrame on Homarr but is accessible for easy use locally. In fact, the password protection is disabled locally as well. Due to this, the landing page actually just links to that service on that port rather than loading the html file. 
 
-## Other Projects
+## Related Projects
 
 | Repo | Description |
 |------|-------------|
-| [scripts](https://github.com/YOUR_USERNAME/scripts) | Standalone media mover scripts |
+| [scripts](https://github.com/Treyzer567/scripts) | Standalone media mover scripts |

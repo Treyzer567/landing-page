@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+:root {
+    --bg-color: #0a0a0f;
+    --accent: #5865f2;
+    --accent-hover: #7289da;
+    --text: #e6e6e6;
+    --text-dim: #b3b3b3;
+}
+
+body {
+    background: linear-gradient(180deg, #0a0a0f 0%, #0d0d16 40%, #11111a 100%);
+    color: var(--text);
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    position: relative;
+}
+
+.bg-blob {
+    position: fixed;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+}
+
+.bg-blob-1 {
+    background: rgba(88, 101, 242, 0.5);
+    top: 5%;
+    left: 15%;
+    animation: blobMove1 45s infinite alternate ease-in-out;
+}
+
+.bg-blob-2 {
+    background: rgba(114, 87, 242, 0.4);
+    top: 55%;
+    left: 65%;
+    animation: blobMove2 60s infinite alternate ease-in-out;
+}
+
+@keyframes blobMove1 {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(80px, 60px); }
+    50% { transform: translate(150px, -40px); }
+    75% { transform: translate(50px, 100px); }
+    100% { transform: translate(0, 0); }
+}
+
+@keyframes blobMove2 {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-100px, 50px); }
+    50% { transform: translate(-60px, -80px); }
+    75% { transform: translate(-120px, 30px); }
+    100% { transform: translate(0, 0); }
+}
+
+.content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1 { 
+    margin-bottom: 2rem; 
+    color: var(--accent); 
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.btn-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 280px;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    background: rgba(88, 101, 242, 0.15);
+    border: 1px solid rgba(88, 101, 242, 0.4);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:hover { 
+    transform: translateY(-3px); 
+    background: rgba(88, 101, 242, 0.25);
+    border-color: rgba(88, 101, 242, 0.6);
+    box-shadow: 0 8px 25px rgba(88, 101, 242, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-icon {
+    font-size: 1.2rem;
+}
+
+.btn-ticket {
+    background: rgba(76, 175, 80, 0.15);
+    border-color: rgba(76, 175, 80, 0.4);
+}
+
+.btn-ticket:hover {
+    background: rgba(76, 175, 80, 0.25);
+    border-color: rgba(76, 175, 80, 0.6);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+}
+
+.btn-scripts {
+    background: rgba(244, 67, 54, 0.15);
+    border-color: rgba(244, 67, 54, 0.4);
+}
+
+.btn-scripts:hover {
+    background: rgba(244, 67, 54, 0.25);
+    border-color: rgba(244, 67, 54, 0.6);
+    box-shadow: 0 8px 25px rgba(244, 67, 54, 0.3);
+}
+
+.btn-icon img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    display: block;
+}
+
+@media (max-width: 500px) {
+    h1 { font-size: 1.6rem; }
+    .bg-blob { width: 200px; height: 200px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+
+<div class="content">
+    <h1>Choose a Page</h1>
+    
+    <div class="btn-grid">
+        <a href="ticket-form.html" class="btn btn-ticket">
+            <span class="btn-icon">🎫</span>
+            <span>Submit a Ticket</span>
+        </a>
+        <a href="coming-soon.html" class="btn">
+            <span class="btn-icon">🚧</span>
+            <span>Coming Soon</span>
+        </a>
+        <a href="javascript:void(0)" id="signon-link" class="btn" onclick="goToSignOn()">
+	    <span class="btn-icon">
+		<img src="/assets/signon-logo.png" alt="Sign On">
+	    </span>
+	    <span>Sign-On</span>
+	</a>
+        <a href="faq.html" class="btn">
+            <span class="btn-icon">❓</span>
+            <span>FAQ</span>
+        </a>
+        <a href="playlist-tool.html" class="btn">
+            <span class="btn-icon">🎵</span>
+            <span>Playlist Importer</span>
+        </a>
+        <a href="script-control.html" class="btn btn-scripts">
+            <span class="btn-icon">📑</span>
+            <span>Script Buttons</span>
+        </a>
+    </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+function goToSignOn() {
+    var url = (window.SIGNON_URL && window.SIGNON_URL !== '') ? window.SIGNON_URL : '/signon';
+    window.location.href = url;
+}
+</script>
+</body>
+</html>

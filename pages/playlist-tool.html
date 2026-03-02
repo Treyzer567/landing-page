@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playlist Importer Tool</title>
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: #0a0a0f;
+    overflow-x: hidden;
+}
+
+:root {
+    --bg-color: #0a0a0f;
+    --card-bg: linear-gradient(145deg, 
+        rgba(88, 101, 242, 0.12) 0%, 
+        rgba(114, 137, 218, 0.06) 50%, 
+        rgba(88, 101, 242, 0.10) 100%);
+    --glass-border: rgba(88, 101, 242, 0.25);
+    --glass-shine: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0) 50%,
+        rgba(88, 101, 242, 0.08) 100%);
+    --input-bg: #1a1a25;
+    --border: rgba(88, 101, 242, 0.18);
+    --accent: #5865f2;
+    --accent-gradient: linear-gradient(135deg, #5865f2, #7289da);
+    --text: #e6e6e6;
+    --text-dim: #b3b3b3;
+    --success: #2ecc71;
+    --fail: #e74c3c;
+    --warning: #f1c40f;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    color: var(--text);
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    position: relative;
+    padding: 0;
+}
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    backdrop-filter: blur(40px) saturate(150%);
+    -webkit-backdrop-filter: blur(40px) saturate(150%);
+    position: relative;
+    overflow: hidden;
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(88, 101, 242, 0.4), 
+        transparent);
+}
+
+.card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--glass-shine);
+    pointer-events: none;
+    border-radius: 24px;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.header-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.main-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+.subtitle {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.form-group { margin-bottom: 1.25rem; position: relative; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--text-dim); }
+
+input[type="text"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+input:hover { border-color: rgba(88, 101, 242, 0.5); }
+input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.2); }
+input::placeholder { color: #666; }
+
+/* DROPDOWN - SOLID OPAQUE BACKGROUND */
+.custom-dropdown {
+    position: relative;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+    z-index: 50;
+}
+
+.custom-dropdown:hover { border-color: rgba(88, 101, 242, 0.5); }
+.custom-dropdown.open { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.2); z-index: 200; }
+
+.custom-dropdown .arrow {
+    border: solid var(--text-dim);
+    border-width: 0 2px 2px 0;
+    padding: 3px;
+    transform: rotate(45deg);
+    transition: transform 0.2s;
+}
+
+.custom-dropdown.open .arrow { transform: rotate(-135deg); }
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    background: #1e1e2a;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    z-index: 9999;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.dropdown-content.show { display: block; }
+
+.dropdown-option {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    color: var(--text);
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(88, 101, 242, 0.15);
+}
+
+.dropdown-option:last-child { border-bottom: none; }
+.dropdown-option:hover { background: rgba(88, 101, 242, 0.25); }
+.dropdown-option.selected { background: rgba(88, 101, 242, 0.35); }
+.dropdown-option.disabled { opacity: 0.5; cursor: default; }
+.dropdown-option.disabled:hover { background: transparent; }
+
+/* Radio Buttons */
+.radio-group { display: flex; gap: 1.5rem; margin-top: 0.5rem; }
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text);
+}
+
+.radio-label input {
+    margin-right: 0.5rem;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    transition: all 0.2s;
+    position: relative;
+    cursor: pointer;
+}
+
+.radio-label input:checked {
+    background: var(--accent);
+}
+
+.radio-label input:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--accent-gradient);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4); }
+button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.button-content { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.spinner { border: 2px solid rgba(255,255,255,0.2); border-left-color: #fff; border-radius: 50%; width: 16px; height: 16px; animation: spin 0.7s linear infinite; display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Log Terminal */
+.log-terminal {
+    margin-top: 1.5rem;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    background: rgba(10, 10, 20, 0.6);
+}
+
+.log-terminal-header {
+    background: rgba(26, 26, 37, 0.9);
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.terminal-title { font-size: 0.7rem; color: #888; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+
+#import-log {
+    margin: 0;
+    padding: 1rem;
+    background: rgba(13, 13, 18, 0.9);
+    white-space: pre-wrap;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: #d1d1e0;
+    height: 280px;
+    overflow-y: auto;
+}
+
+.log-ts { color: #5c6370; margin-right: 8px; }
+.log-success { color: var(--success); font-weight: bold; }
+.log-warning { color: var(--warning); font-weight: bold; }
+.log-error { color: var(--fail); font-weight: bold; }
+.log-info { color: var(--accent); }
+.log-header { display: block; margin: 10px 0; padding: 5px 0; border-top: 1px solid #2d2d3d; border-bottom: 1px solid #2d2d3d; color: #fff; text-align: center; letter-spacing: 2px; }
+
+#import-log::-webkit-scrollbar { width: 6px; }
+#import-log::-webkit-scrollbar-track { background: #0d0d12; }
+#import-log::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+#import-log::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+@media (max-width: 500px) {
+    body { padding: 0; }
+    .card { padding: 1.5rem; }
+    .main-title { font-size: 1.3rem; }
+    #import-log { height: 220px; font-size: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <div class="card-header">
+        <div class="header-icon">🎵</div>
+        <h1 class="main-title">Jellyfin Playlist Importer</h1>
+        <p class="subtitle">Import playlists from your favorite music services</p>
+    </div>
+
+    <div class="form-group">
+        <label for="playlist-url">Playlist URL</label>
+        <input type="text" id="playlist-url" placeholder="e.g., https://open.spotify.com/playlist/..." required>
+    </div>
+
+    <div class="form-group">
+        <label>Source Platform</label>
+        <div class="custom-dropdown" id="source-dropdown">
+            <span id="source-label">Spotify</span>
+            <span class="arrow"></span>
+            <div id="source-items" class="dropdown-content">
+                <div class="dropdown-option selected" data-value="spotify">Spotify</div>
+                <div class="dropdown-option" data-value="youtube-music">YouTube Music</div>
+                <div class="dropdown-option disabled" data-value="apple-music">Apple Music (Coming Soon)</div>
+            </div>
+        </div>
+        <input type="hidden" id="source-select" value="spotify">
+    </div>
+
+    <div class="form-group">
+        <label for="user-id">Target Jellyfin Username</label>
+        <input type="text" id="user-id" placeholder="e.g., trey" required>
+    </div>
+  
+    <div class="form-group">
+        <label>Playlist Visibility</label>
+        <div class="radio-group">
+            <label class="radio-label">
+                <input type="radio" name="visibility" value="private" checked>
+                Private
+            </label>
+            <label class="radio-label">
+                <input type="radio" name="visibility" value="public">
+                Public
+            </label>
+        </div>
+    </div>
+
+    <button id="start-import">
+        <span class="button-content">
+            Start Import
+            <div class="spinner" id="import-spinner"></div>
+        </span>
+    </button>
+
+    <div class="log-terminal">
+        <div class="log-terminal-header">
+            <div class="terminal-title">Import Logs</div>
+        </div>
+        <div id="import-log">Awaiting command...</div>
+    </div>
+</div>
+
+<script src="config.js"></script>
+<script>(function() {
+    const dropdown = document.getElementById('source-dropdown');
+    const content = document.getElementById('source-items');
+    const label = document.getElementById('source-label');
+    const hiddenInput = document.getElementById('source-select');
+    
+    function closeAllDropdowns() {
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+        document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
+    }
+    
+    dropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isOpen = content.classList.contains('show');
+        closeAllDropdowns();
+        if (!isOpen) {
+            content.classList.add('show');
+            dropdown.classList.add('open');
+        }
+    });
+    
+    content.querySelectorAll('.dropdown-option:not(.disabled)').forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.stopPropagation();
+            hiddenInput.value = this.dataset.value;
+            label.textContent = this.textContent;
+            content.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            closeAllDropdowns();
+        });
+    });
+    
+    document.addEventListener('click', closeAllDropdowns);
+})();
+
+const BACKEND_HOST = (window.PLAYLIST_BACKEND_URL && window.PLAYLIST_BACKEND_URL !== '') ? window.PLAYLIST_BACKEND_URL : `http://${window.location.hostname}:8120`; 
+const API_URL = BACKEND_HOST + '/api/import';
+
+document.getElementById('start-import').addEventListener('click', () => {
+    const logArea = document.getElementById('import-log');
+    const importButton = document.getElementById('start-import');
+    const spinner = document.getElementById('import-spinner');
+    
+    const url = document.getElementById('playlist-url').value;
+    const source = document.getElementById('source-select').value;
+    const userId = document.getElementById('user-id').value;
+    const visibilityElement = document.querySelector('input[name="visibility"]:checked');
+    const visibility = visibilityElement ? visibilityElement.value : 'private';
+
+    if (!url || !source || !userId) {
+        logArea.innerHTML = `<span class="log-error">Error: Please fill in all required fields.</span>`;
+        return;
+    }
+    
+    importButton.disabled = true;
+    spinner.style.display = 'block';
+
+    const getTime = () => `<span class="log-ts">[${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}]</span>`;
+
+    logArea.innerHTML = `${getTime()} Starting import process...\n`;
+    logArea.innerHTML += `${getTime()} Source: <span class="log-info">${source}</span>, URL: <span class="log-info">${url}</span>\n`;
+    logArea.innerHTML += `${getTime()} User: <span class="log-info">${userId}</span>, Visibility: <span class="log-info">${visibility}</span>`;
+
+    fetch(API_URL, { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            playlist_url: url,
+            source_platform: source,
+            jellyfin_user_id: userId, 
+            visibility: visibility
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(errData => {
+                throw new Error(errData.error || `HTTP error! Status: ${response.status}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        importButton.disabled = false;
+        spinner.style.display = 'none';
+
+        if (data.success) {
+            const time = getTime();
+            let finalMessage = `\n<span class="log-header">--- IMPORT INITIALIZED ---</span>\n`;
+            finalMessage += `${time} <span class="log-success">SUCCESS:</span> ${data.message}\n`;
+            finalMessage += `${time} <span class="log-info">NOTE:</span> For large playlists, matching can take several minutes.\n`;
+            finalMessage += `${time} <span class="log-info">AUTO-UPDATE:</span> The playlist will be updated with newly downloaded songs every 6hrs for the next 24hrs.\n`;
+            finalMessage += `-------------------------------------------\n`;
+            finalMessage += `${time} You can close this page; the process will finish on the server.\n`;
+            logArea.innerHTML += finalMessage;
+        } else {
+            logArea.innerHTML += `\n\n${getTime()} <span class="log-error">IMPORT FAILED:</span> ${data.error || 'Unknown error'}`;
+        }
+        logArea.scrollTop = logArea.scrollHeight;
+    })
+    .catch(error => {
+        importButton.disabled = false;
+        spinner.style.display = 'none';
+        logArea.innerHTML += `\n\n${getTime()} <span class="log-error">CRITICAL ERROR:</span> ${error.message}`;
+        logArea.scrollTop = logArea.scrollHeight;
+    });
+});
+</script>
+
+</body>
+</html>

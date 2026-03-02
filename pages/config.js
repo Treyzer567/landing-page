@@ -1,0 +1,1 @@
+window.CONFIG_LOADED=false;window.ACCESS_TOKEN='';window.HESK_URL='';window.HESK_CATEGORIES=[{"id":1,"name":"General Support","priority":3}];window.SIGNON_URL='';window.SCRIPT_RUNNER_URL='';window.PLAYLIST_BACKEND_URL='';window.HESK_MIDDLEWARE_URL='';

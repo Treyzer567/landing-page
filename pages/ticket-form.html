@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Submit a Support Ticket</title>
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: #0a0a0f;
+    overflow-x: hidden;
+}
+
+:root {
+    --bg-color: #0a0a0f;
+    --card-bg: linear-gradient(145deg, 
+        rgba(88, 101, 242, 0.12) 0%, 
+        rgba(114, 137, 218, 0.06) 50%, 
+        rgba(88, 101, 242, 0.10) 100%);
+    --glass-border: rgba(88, 101, 242, 0.25);
+    --glass-shine: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0) 50%,
+        rgba(88, 101, 242, 0.08) 100%);
+    --border: rgba(88, 101, 242, 0.18);
+    --accent: #5865f2;
+    --accent-gradient: linear-gradient(135deg, #5865f2, #7289da);
+    --text: #e6e6e6;
+    --text-dim: #b3b3b3;
+    --success: #4CAF50;
+    --fail: #ff5555;
+    --warning: #ffaa00;
+    --input-bg: #1a1a25;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    color: var(--text);
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    position: relative;
+    padding: 0;
+}
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 1.25rem 1.75rem;
+    width: 90%;
+    max-width: 520px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    backdrop-filter: blur(40px) saturate(150%);
+    -webkit-backdrop-filter: blur(40px) saturate(150%);
+    position: relative;
+    overflow: hidden;
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(88, 101, 242, 0.4), 
+        transparent);
+}
+
+.card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--glass-shine);
+    pointer-events: none;
+    border-radius: 24px;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.header-icon { font-size: 2rem; margin-bottom: 0.35rem; }
+
+.main-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+.subtitle {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.form-group { margin-bottom: 0.9rem; position: relative; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--text-dim); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+input[type="text"], input[type="email"], textarea {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.95rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+input:hover, textarea:hover { border-color: rgba(88, 101, 242, 0.5); }
+input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.2); }
+input::placeholder, textarea::placeholder { color: #666; }
+textarea { min-height: 65px; resize: vertical; line-height: 1.5; }
+.field-hint { display: block; margin-top: 0.35rem; font-size: 0.7rem; color: #666; }
+
+/* CUSTOM DROPDOWN - Matching playlist-tool style */
+.custom-dropdown {
+    position: relative;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+    z-index: 50;
+}
+
+.custom-dropdown:hover { border-color: rgba(88, 101, 242, 0.5); }
+.custom-dropdown.open { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.2); z-index: 200; }
+
+.custom-dropdown .dropdown-label {
+    color: var(--text);
+    font-size: 0.95rem;
+}
+
+.custom-dropdown .dropdown-label.placeholder {
+    color: #666;
+}
+
+.custom-dropdown .arrow {
+    border: solid var(--text-dim);
+    border-width: 0 2px 2px 0;
+    padding: 3px;
+    transform: rotate(45deg);
+    transition: transform 0.2s;
+}
+
+.custom-dropdown.open .arrow { transform: rotate(-135deg); }
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    background: #1e1e2a;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    z-index: 9999;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.dropdown-content.show { display: block; }
+
+.dropdown-option {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    color: var(--text);
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(88, 101, 242, 0.15);
+}
+
+.dropdown-option:last-child { border-bottom: none; }
+.dropdown-option:hover { background: rgba(88, 101, 242, 0.25); }
+.dropdown-option.selected { background: rgba(88, 101, 242, 0.35); }
+
+/* Scrollbar for dropdown */
+.dropdown-content::-webkit-scrollbar { width: 6px; }
+.dropdown-content::-webkit-scrollbar-track { background: #1e1e2a; border-radius: 0 8px 8px 0; }
+.dropdown-content::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+/* PRIORITY BUTTONS */
+.priority-group {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.priority-option {
+    flex: 1;
+    position: relative;
+    min-width: 0;
+}
+
+.priority-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.priority-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 46px;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.priority-inner {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: 8px;
+    align-items: center;
+}
+
+.priority-label:hover {
+    border-color: rgba(88, 101, 242, 0.5);
+    background: rgba(88, 101, 242, 0.1);
+}
+
+.priority-option input:checked + .priority-label.priority-low {
+    border-color: var(--success);
+    background: rgba(76, 175, 80, 0.15);
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.25);
+}
+
+.priority-option input:checked + .priority-label.priority-medium {
+    border-color: var(--warning);
+    background: rgba(255, 170, 0, 0.15);
+    box-shadow: 0 0 15px rgba(255, 170, 0, 0.25);
+}
+
+.priority-option input:checked + .priority-label.priority-high {
+    border-color: var(--fail);
+    background: rgba(255, 85, 85, 0.15);
+    box-shadow: 0 0 15px rgba(255, 85, 85, 0.25);
+}
+
+.priority-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.priority-text {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.priority-option input:checked + .priority-label .priority-text {
+    color: #ffffff;
+}
+
+/* File Upload Styling */
+.file-upload-area {
+    background: var(--input-bg);
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 0.85rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.file-upload-area:hover {
+    border-color: var(--accent);
+    background: rgba(88, 101, 242, 0.1);
+}
+
+.file-upload-area.drag-over {
+    border-color: var(--accent);
+    background: rgba(88, 101, 242, 0.15);
+}
+
+.file-upload-icon { font-size: 1.75rem; margin-bottom: 0.5rem; }
+.file-upload-text { color: var(--text-dim); font-size: 0.85rem; }
+.file-upload-text span { color: var(--accent); text-decoration: underline; }
+.file-upload-hint { color: #555; font-size: 0.7rem; margin-top: 0.4rem; }
+
+.file-list { margin-top: 0.75rem; }
+
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    background: rgba(88, 101, 242, 0.1);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.file-item-name {
+    font-size: 0.8rem;
+    color: var(--text);
+    flex: 1;
+    margin-right: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-item-size {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-right: 0.5rem;
+}
+
+.file-item-remove {
+    background: none;
+    border: none;
+    color: var(--fail);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-item-remove:hover { color: #ff7777; }
+
+@media (max-width: 500px) {
+    .priority-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0.5rem;
+    }
+}
+
+/* Submit Button */
+button[type="submit"] {
+    width: 100%;
+    padding: 0.7rem;
+    background: var(--accent-gradient);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 0.5rem;
+}
+
+button[type="submit"]:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4); }
+button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.button-content { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.spinner { border: 2px solid rgba(255, 255, 255, 0.2); border-left-color: #fff; border-radius: 50%; width: 16px; height: 16px; animation: spin 0.7s linear infinite; display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.msg-box { margin-top: 0.75rem; padding: 0.6rem; border-radius: 6px; text-align: center; font-size: 0.85rem; }
+.msg-box.error { background: rgba(255, 85, 85, 0.1); color: var(--fail); border: 1px solid rgba(255, 85, 85, 0.3); }
+.msg-box.success { background: rgba(76, 175, 80, 0.1); color: var(--success); border: 1px solid rgba(76, 175, 80, 0.3); }
+.hidden { display: none !important; }
+
+/* Success Screen */
+.success-screen {
+    text-align: center;
+    padding: 1.25rem 1rem;
+}
+
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: bounceIn 0.5s ease;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.success-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--success);
+    margin-bottom: 0.5rem;
+}
+
+.ticket-id {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+    background: rgba(88, 101, 242, 0.2);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    display: inline-block;
+    margin: 1rem 0;
+    font-family: monospace;
+}
+
+.success-message {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.btn-new-ticket {
+    background: var(--accent-gradient);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    padding: 0.75rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-new-ticket:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
+}
+
+@media (max-width: 500px) {
+    body { padding: 0; }
+    .card { padding: 1.5rem; }
+    .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <!-- Form View -->
+    <div id="formView">
+        <div class="card-header">
+            <div class="header-icon">🎫</div>
+            <h1 class="main-title">Submit a Support Ticket</h1>
+            <p class="subtitle">We'll get back to you as soon as possible</p>
+        </div>
+
+        <form id="ticketForm" autocomplete="off">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Your Name *</label>
+                    <input type="text" id="name" name="name" required placeholder="John Doe" maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required placeholder="john@example.com" maxlength="1000">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category *</label>
+                <div class="custom-dropdown" id="category-dropdown">
+                    <span class="dropdown-label placeholder" id="category-label">-- Select a category --</span>
+                    <span class="arrow"></span>
+                    <div id="category-items" class="dropdown-content">
+                        <!-- Categories are populated from HESK via the compose command/config.js -->
+                        <div class="dropdown-option" data-value="1">General Support</div>
+                    </div>
+                </div>
+                <input type="hidden" id="category" name="category" value="">
+                <span class="field-hint">Select the category that best matches your issue</span>
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Subject *</label>
+                <input type="text" id="subject" name="subject" required placeholder="Brief description of your issue" maxlength="70">
+            </div>
+
+            <div class="form-group">
+                <label>Priority Level *</label>
+                <div class="priority-group">
+                    <label class="priority-option">
+                        <input type="radio" name="priority" value="high">
+                        <div class="priority-label priority-high">
+                            <span class="priority-inner">
+                                <span class="priority-icon">🔴</span>
+                                <span class="priority-text">HIGH</span>
+                            </span>
+                        </div>
+                    </label>
+
+                    <label class="priority-option">
+                        <input type="radio" name="priority" value="medium">
+                        <div class="priority-label priority-medium">
+                            <span class="priority-inner">
+                                <span class="priority-icon">🟡</span>
+                                <span class="priority-text">MEDIUM</span>
+                            </span>
+                        </div>
+                    </label>
+
+                    <label class="priority-option">
+                        <input type="radio" name="priority" value="low" checked>
+                        <div class="priority-label priority-low">
+                            <span class="priority-inner">
+                                <span class="priority-icon">🟢</span>
+                                <span class="priority-text">LOW</span>
+                            </span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Description *</label>
+                <textarea id="message" name="message" required placeholder="Please provide as much detail as possible..." rows="6"></textarea>
+                <span class="field-hint">Include error messages, steps to reproduce, or relevant details</span>
+            </div>
+
+            <div class="form-group">
+                <label>Attachments (optional)</label>
+                <div class="file-upload-area" id="dropZone">
+                    <div class="file-upload-icon">📎</div>
+                    <div class="file-upload-text">Drag files here or <span>browse</span></div>
+                    <div class="file-upload-hint">Max 2 files • jpg, png, gif, txt, pdf, doc, zip • 2MB each</div>
+                </div>
+                <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.gif,.txt,.pdf,.doc,.docx,.zip" style="display: none;">
+                <div class="file-list" id="fileList"></div>
+            </div>
+
+            <button type="submit" id="submitBtn">
+                <span class="button-content">
+                    <span id="submitText">Submit Ticket</span>
+                    <div class="spinner" id="submitSpinner"></div>
+                </span>
+            </button>
+            <div class="msg-box hidden" id="msgBox"></div>
+        </form>
+    </div>
+
+    <!-- Success View -->
+    <div id="successView" class="hidden">
+        <div class="success-screen">
+            <div class="success-icon">✅</div>
+            <h2 class="success-title">Ticket Submitted!</h2>
+            <div class="ticket-id" id="ticketIdDisplay">---</div>
+            <p class="success-message">
+                Your support request has been received.<br>
+                You will receive a confirmation email shortly.<br>
+                Please save your ticket ID for reference.
+            </p>
+            <button class="btn-new-ticket" onclick="resetForm()">Submit Another Ticket</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================
+// DROPDOWN FUNCTIONALITY
+// ============================================
+(function() {
+    const dropdown = document.getElementById('category-dropdown');
+    const content = document.getElementById('category-items');
+    const label = document.getElementById('category-label');
+    const hiddenInput = document.getElementById('category');
+    
+    function closeAllDropdowns() {
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+        document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
+    }
+    
+    dropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isOpen = content.classList.contains('show');
+        closeAllDropdowns();
+        if (!isOpen) {
+            content.classList.add('show');
+            dropdown.classList.add('open');
+        }
+    });
+    
+    content.querySelectorAll('.dropdown-option').forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.stopPropagation();
+            hiddenInput.value = this.dataset.value;
+            label.textContent = this.textContent;
+            label.classList.remove('placeholder');
+            content.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            closeAllDropdowns();
+        });
+    });
+    
+    document.addEventListener('click', closeAllDropdowns);
+})();
+
+// ============================================
+// CONFIGURATION
+// If the middleware is running on the same host (served via nginx proxy), use relative path:
+//const MIDDLEWARE_URL = '/submit-ticket';
+// If the middleware is hosted separately, use the full URL (set via HESK_MIDDLEWARE_URL in compose):
+const MIDDLEWARE_URL = (window.HESK_MIDDLEWARE_URL && window.HESK_MIDDLEWARE_URL !== '')
+    ? window.HESK_MIDDLEWARE_URL + '/submit-ticket'
+    : `http://${window.location.hostname}:3001/submit-ticket`;
+// ============================================
+
+// Populate categories from config.js (injected by nginx startup command)
+(function() {
+    const content = document.getElementById('category-items');
+    const categories = window.HESK_CATEGORIES;
+    if (categories && categories.length > 0) {
+        content.innerHTML = '';
+        categories.forEach(cat => {
+            const opt = document.createElement('div');
+            opt.className = 'dropdown-option';
+            opt.dataset.value = cat.id;
+            opt.textContent = cat.name;
+            content.appendChild(opt);
+        });
+        // Re-bind click handlers after dynamic population
+        content.querySelectorAll('.dropdown-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.stopPropagation();
+                document.getElementById('category').value = this.dataset.value;
+                const label = document.getElementById('category-label');
+                label.textContent = this.textContent;
+                label.classList.remove('placeholder');
+                content.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+                document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
+            });
+        });
+    }
+})();
+
+const MAX_FILES = 2;
+const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+const ALLOWED_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'txt', 'pdf', 'doc', 'docx', 'zip'];
+
+let selectedFiles = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('ticketForm');
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+
+    // Click to browse
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    // File selection
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+        fileInput.value = '';
+    });
+
+    // Drag and drop
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        handleFiles(e.dataTransfer.files);
+    });
+
+    // Form submission
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const category = document.getElementById('category').value;
+        const subject = document.getElementById('subject').value.trim();
+        const message = document.getElementById('message').value.trim();
+        const priority = document.querySelector('input[name="priority"]:checked');
+
+        if (!name || !email || !category || !subject || !message) {
+            showMessage('Please fill in all required fields.', 'error');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showMessage('Please enter a valid email address.', 'error');
+            return;
+        }
+
+        if (!priority) {
+            showMessage('Please select a priority level.', 'error');
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('category', category);
+            formData.append('subject', subject);
+            formData.append('message', message);
+            formData.append('priority', priority.value);
+
+            selectedFiles.forEach(file => {
+                formData.append('attachments', file);
+            });
+
+            const response = await fetch(MIDDLEWARE_URL, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                document.getElementById('ticketIdDisplay').textContent = result.ticketId || 'Submitted';
+                document.getElementById('formView').classList.add('hidden');
+                document.getElementById('successView').classList.remove('hidden');
+            } else {
+                showMessage(result.error || 'Failed to submit ticket. Please try again.', 'error');
+            }
+        } catch (error) {
+            console.error('Submission error:', error);
+            showMessage('Connection error. Please check your network and try again.', 'error');
+        } finally {
+            setLoading(false);
+        }
+    });
+});
+
+function handleFiles(files) {
+    Array.from(files).forEach(file => {
+        if (selectedFiles.length >= MAX_FILES) {
+            showMessage(`Maximum ${MAX_FILES} files allowed`, 'error');
+            return;
+        }
+
+        if (file.size > MAX_SIZE) {
+            showMessage(`"${file.name}" exceeds 2MB limit`, 'error');
+            return;
+        }
+
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (!ALLOWED_TYPES.includes(ext)) {
+            showMessage(`File type ".${ext}" not allowed`, 'error');
+            return;
+        }
+
+        if (selectedFiles.some(f => f.name === file.name)) {
+            return;
+        }
+
+        selectedFiles.push(file);
+        renderFileList();
+    });
+}
+
+function renderFileList() {
+    const fileList = document.getElementById('fileList');
+    fileList.innerHTML = '';
+
+    selectedFiles.forEach((file, index) => {
+        const size = file.size < 1024 ? file.size + ' B' :
+                     file.size < 1048576 ? (file.size / 1024).toFixed(1) + ' KB' :
+                     (file.size / 1048576).toFixed(1) + ' MB';
+
+        const item = document.createElement('div');
+        item.className = 'file-item';
+        item.innerHTML = `
+            <span class="file-item-name">📄 ${file.name}</span>
+            <span class="file-item-size">${size}</span>
+            <button type="button" class="file-item-remove" data-index="${index}">✕</button>
+        `;
+        fileList.appendChild(item);
+    });
+
+    fileList.querySelectorAll('.file-item-remove').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const index = parseInt(this.dataset.index);
+            selectedFiles.splice(index, 1);
+            renderFileList();
+        });
+    });
+}
+
+function setLoading(loading) {
+    const btn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('submitSpinner');
+    const text = document.getElementById('submitText');
+
+    btn.disabled = loading;
+    spinner.style.display = loading ? 'block' : 'none';
+    text.textContent = loading ? 'Submitting...' : 'Submit Ticket';
+}
+
+function showMessage(msg, type) {
+    const msgBox = document.getElementById('msgBox');
+    msgBox.textContent = msg;
+    msgBox.className = `msg-box ${type}`;
+    msgBox.classList.remove('hidden');
+    setTimeout(() => msgBox.classList.add('hidden'), 5000);
+}
+
+function resetForm() {
+    document.getElementById('ticketForm').reset();
+    selectedFiles = [];
+    renderFileList();
+    // Reset dropdown
+    document.getElementById('category').value = '';
+    document.getElementById('category-label').textContent = '-- Select a category --';
+    document.getElementById('category-label').classList.add('placeholder');
+    document.querySelectorAll('#category-items .dropdown-option').forEach(opt => opt.classList.remove('selected'));
+    document.getElementById('formView').classList.remove('hidden');
+    document.getElementById('successView').classList.add('hidden');
+}
+</script>
+</body>
+</html>

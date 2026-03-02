@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.bg-blob {
+    display: none;
+}
+
+:root {
+    --bg-color: #0a0a0f;
+    --card-bg: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.06) 100%);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --accent: #5865f2;
+    --text: #e6e6e6;
+    --text-dim: #b3b3b3;
+    --border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    background: linear-gradient(180deg, #0a0a0f 0%, #0d0d16 40%, #11111a 100%);
+    color: var(--text);
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem 0 0 0;
+    position: relative;
+}
+
+.page-header {
+    text-align: center;
+    margin: 0 0 0.75rem 0;
+    padding: 0 0.5rem 0;
+    position: relative;
+    z-index: 10;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.header-icon {
+    font-size: 2.5rem;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+}
+
+h1 {
+    color: var(--accent);
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+.subtitle {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    margin: 0.25rem 0 0 0;
+}
+
+.faq-container {
+    width: 100%;
+    max-width: 900px;
+    padding: 0 0.5rem;
+    position: relative;
+    z-index: 10;
+}
+
+.faq-item {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    animation: slideUp 0.4s ease;
+    animation-fill-mode: both;
+}
+
+.faq-item:nth-child(1) { animation-delay: 0.05s; }
+.faq-item:nth-child(2) { animation-delay: 0.1s; }
+.faq-item:nth-child(3) { animation-delay: 0.15s; }
+.faq-item:nth-child(4) { animation-delay: 0.2s; }
+.faq-item:nth-child(5) { animation-delay: 0.25s; }
+.faq-item:nth-child(6) { animation-delay: 0.3s; }
+.faq-item:nth-child(7) { animation-delay: 0.35s; }
+
+@keyframes slideUp {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.faq-q {
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.faq-q:hover {
+    background: rgba(88, 101, 242, 0.1);
+}
+
+.faq-q-text {
+    flex: 1;
+}
+
+.faq-arrow {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(88, 101, 242, 0.15);
+    color: var(--accent);
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.faq-item.active .faq-arrow {
+    transform: rotate(180deg);
+    background: var(--accent);
+    color: white;
+}
+
+.faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    color: var(--text-dim);
+    line-height: 1.7;
+    border-top: 1px solid transparent;
+}
+
+.faq-item.active .faq-a {
+    max-height: 500px;
+    padding: 1.25rem 1.5rem;
+    border-top-color: var(--border);
+}
+
+.back-link-container {
+    margin-top: 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: all 0.25s ease;
+}
+
+.back-link:hover {
+    color: var(--text);
+    border-color: var(--accent);
+    background: rgba(88, 101, 242, 0.1);
+    transform: translateY(-2px);
+}
+
+.back-arrow { transition: transform 0.25s ease; }
+.back-link:hover .back-arrow { transform: translateX(-4px); }
+
+@media (max-width: 600px) {
+    h1 { font-size: 1.6rem; }
+    .page-header { margin-bottom: 0.5rem; }
+    .header-icon { font-size: 2rem; }
+    .faq-q { padding: 1rem 1.25rem; font-size: 0.95rem; }
+    .faq-item.active .faq-a { padding: 1rem 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+
+<div class="page-header">
+    <div class="header-icon">❓</div>
+    <h1>Frequently Asked Questions</h1>
+    <p class="subtitle">Find answers to common questions below</p>
+</div>
+
+<div class="faq-container">
+
+    <div class="faq-item">
+        <div class="faq-q">
+            <span class="faq-q-text">Where can I see recently added items?</span>
+            <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">Use the panels on the dashboard to view the most recent items added to the system. Updates appear automatically.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-q">
+            <span class="faq-q-text">What should I do if something isn't working?</span>
+            <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">Try refreshing the page first. If the problem persists, submit a ticket using the Support Ticket page, refer to the Common Questions/Issues shelf on the wiki, or contact support directly.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-q">
+            <span class="faq-q-text">How do I submit a ticket?</span>
+            <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">You can submit tickets via the Ticket Submission page</a>. Each ticket will be handled promptly by the support team.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-q">
+            <span class="faq-q-text">I am interested in setting up one of the servers for my own use, how can I?</span>
+            <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">Check out the Getting Started section on the Wiki! It has various support related topics created including but not limited to: clients, setting up the service, and the use of services.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-q">
+            <span class="faq-q-text">How can I make a request for a show/movie?</span>
+            <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">Visit the media request service, sign in with your Jellyfin credentials, then search and request the wanted media or you can make use of the Request tab on the main Jellyfin site or through the Streamyfin client via the Discover section in search.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-q">
+            <span class="faq-q-text">How can I make a request for music?</span>
+            <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">The easiest way to get more music added to the server is by using the Playlist Importer Tool</a>. It will scan the playlist provided, create one with available tracks on Jellyfin, search for missing tracks on Lidarr, then download and import them on a scheduled basis. It will update the playlist every 6 hours for the following 24 hours with newly found tracks. If no new songs are available before it is done downloading through deemix, it will download the individual songs directly through spotify through Spooty.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-q">
+            <span class="faq-q-text">The naming seems a bit confusing - how are the services' domains named?</span>
+            <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">All of the domains/URLs that are used for each service are sub-domains of your configured domain. For example, if your domain is example.com, the wiki would be at wiki.example.com. The sole exception is the main Jellyfin service if it is tied to the root domain itself.</div>
+    </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+        const item = q.parentElement;
+        const wasActive = item.classList.contains('active');
+        
+        // Close all other items
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+        
+        // Toggle current item
+        if (!wasActive) {
+            item.classList.add('active');
+        }
+    });
+});
+</script>
+
+</body>
+</html>

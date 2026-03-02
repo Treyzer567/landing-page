@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Script Runner</title>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+    --bg-color: #0a0a0f;
+    --accent: #5865f2;
+    --accent-hover: #7289da;
+    --text: #e6e6e6;
+    --text-dim: #b3b3b3;
+
+    --success: #4caf50;
+    --error: #f44336;
+    --running: #ff9800;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    width: 100%;
+}
+
+body {
+    background: linear-gradient(180deg, #0a0a0f 0%, #0d0d16 40%, #11111a 100%);
+    color: var(--text);
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.content {
+    width: 100%;
+    max-width: 820px;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+    text-align: center;
+    color: var(--accent);
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 2.5rem;
+    letter-spacing: -0.5px;
+}
+
+.script-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Script row */
+.script-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: rgba(88, 101, 242, 0.14);
+    border: 1px solid rgba(88, 101, 242, 0.35);
+    border-radius: 14px;
+    transition: all 0.25s ease;
+}
+
+.script-row:hover {
+    background: rgba(88, 101, 242, 0.2);
+    border-color: rgba(88, 101, 242, 0.5);
+}
+
+/* Name */
+.script-name {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+/* Status pill */
+.status {
+    min-width: 90px;
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    color: var(--text-dim);
+}
+
+.status.running { color: var(--running); }
+.status.success { color: var(--success); }
+.status.error   { color: var(--error); }
+
+/* Time */
+.time {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    white-space: nowrap;
+}
+
+/* Button */
+.btn {
+    padding: 0.6rem 1.3rem;
+    border-radius: 12px;
+    border: 1px solid rgba(244, 67, 54, 0.45);
+    background: rgba(244, 67, 54, 0.18);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn:hover {
+    background: rgba(244, 67, 54, 0.28);
+    border-color: rgba(244, 67, 54, 0.65);
+    box-shadow: 0 8px 25px rgba(244, 67, 54, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 650px) {
+    .script-row {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .script-row > * {
+        justify-self: center;
+    }
+
+    .script-name {
+        justify-content: center;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="content">
+    <h1>Manual Script Runner</h1>
+
+    <div class="script-list">
+
+        <!-- SCRIPT TEMPLATE -->
+        <!-- Copy pattern for each script -->
+
+        <div class="script-row">
+            <div class="script-name">📘 Comic Mover</div>
+            <div id="comic-mover-status" class="status">Idle</div>
+            <div id="comic-mover-time" class="time">—</div>
+            <button id="comic-mover-btn" class="btn" onclick="run('comic-mover')">Run</button>
+        </div>
+
+        <div class="script-row">
+            <div class="script-name">📕 Manga Mover</div>
+            <div id="manga-mover-status" class="status">Idle</div>
+            <div id="manga-mover-time" class="time">—</div>
+            <button id="manga-mover-btn" class="btn" onclick="run('manga-mover')">Run</button>
+        </div>
+
+        <div class="script-row">
+            <div class="script-name">🎬 Movie Mover</div>
+            <div id="movie-mover-status" class="status">Idle</div>
+            <div id="movie-mover-time" class="time">—</div>
+            <button id="movie-mover-btn" class="btn" onclick="run('movie-mover')">Run</button>
+        </div>
+
+        <div class="script-row">
+            <div class="script-name">🎬 Musical Mover</div>
+            <div id="musicals-mover-status" class="status">Idle</div>
+            <div id="musicals-mover-time" class="time">—</div>
+            <button id="musicals-mover-btn" class="btn" onclick="run('musicals-mover')">Run</button>
+        </div>
+
+        <div class="script-row">
+            <div class="script-name">🎵 Music Mover</div>
+            <div id="music-mover-status" class="status">Idle</div>
+            <div id="music-mover-time" class="time">—</div>
+            <button id="music-mover-btn" class="btn" onclick="run('music-mover')">Run</button>
+        </div>
+
+        <div class="script-row">
+            <div class="script-name">📖 Novel Mover</div>
+            <div id="novel-mover-status" class="status">Idle</div>
+            <div id="novel-mover-time" class="time">—</div>
+            <button id="novel-mover-btn" class="btn" onclick="run('novel-mover')">Run</button>
+        </div>
+
+        <div class="script-row">
+            <div class="script-name">📺 Show Mover</div>
+            <div id="show-mover-status" class="status">Idle</div>
+            <div id="show-mover-time" class="time">—</div>
+            <button id="show-mover-btn" class="btn" onclick="run('show-mover')">Run</button>
+        </div>
+
+        <div class="script-row">
+            <div class="script-name">🌐 Webcomic Mover</div>
+            <div id="webcomic-mover-status" class="status">Idle</div>
+            <div id="webcomic-mover-time" class="time">—</div>
+            <button id="webcomic-mover-btn" class="btn" onclick="run('webcomic-mover')">Run</button>
+        </div>
+
+        <div class="script-row">
+            <div class="script-name">▶️ YouTube Mover</div>
+            <div id="youtube-mover-status" class="status">Idle</div>
+            <div id="youtube-mover-time" class="time">—</div>
+            <button id="youtube-mover-btn" class="btn" onclick="run('youtube-mover')">Run</button>
+        </div>
+
+    </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+const API = (window.SCRIPT_RUNNER_URL && window.SCRIPT_RUNNER_URL !== '') ? window.SCRIPT_RUNNER_URL : `http://${window.location.hostname}:8141`;
+
+function loadHistory(name) {
+    const data = JSON.parse(localStorage.getItem(name));
+    if (!data) return;
+    document.getElementById(`${name}-status`).textContent = data.status;
+    document.getElementById(`${name}-time`).textContent = data.time;
+}
+
+async function run(name) {
+    const status = document.getElementById(`${name}-status`);
+    const time = document.getElementById(`${name}-time`);
+    const btn = document.getElementById(`${name}-btn`);
+
+    btn.disabled = true;
+    status.textContent = "Running…";
+    status.className = "status running";
+
+    const res = await fetch(`${API}/run/${name}`, { method: "POST" });
+    const { job_id } = await res.json();
+
+    const poll = setInterval(async () => {
+        const s = await fetch(`${API}/status/${job_id}`).then(r => r.json());
+
+        if (s.status === "running") return;
+
+        clearInterval(poll);
+        btn.disabled = false;
+
+        const finished = new Date(s.end * 1000).toLocaleString();
+        const final = s.status === "success" ? "Success" : "Failed";
+
+        status.textContent = final;
+        status.className = `status ${s.status}`;
+        time.textContent = finished;
+
+        localStorage.setItem(name, JSON.stringify({
+            status: final,
+            time: finished
+        }));
+    }, 1000);
+}
+
+["comic-mover","manga-mover","movie-mover","musicals-mover","music-mover",
+ "novel-mover","show-mover","webcomic-mover","youtube-mover"].forEach(loadHistory);
+
+</script>
+
+</body>
+</html>
+

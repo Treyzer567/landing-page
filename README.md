@@ -2,6 +2,8 @@
 
 A self-hosted landing page for managing access to a personal media server suite. Serves as a central hub for users to submit support tickets, import playlists, run maintenance scripts, browse FAQs, and navigate to the sign-on portal.
 
+These tools (with the exception of the Sign-On Page) are used through iFrames on Homarr. They can be used directy as their own site or as an iFrame - each one should be fairly flexible. 
+
 ---
 
 ## Pages
@@ -19,41 +21,29 @@ A self-hosted landing page for managing access to a personal media server suite.
 
 ## Backend Repos
 
-Each backend service has its own repository. See them below:
+Each backend service has its own repository. See them below for more detail regarding each:
 
 | Service | Repo | Description |
 |---------|------|-------------|
-| **Playlist Importer** | [playlist-importer](https://github.com/YOUR_USERNAME/playlist-importer) | Imports Spotify/YouTube Music playlists into Jellyfin |
-| **Script Runner** | [script-runner](https://github.com/YOUR_USERNAME/script-runner) | API for triggering and monitoring media mover scripts |
-| **Ticket Middleware** | [ticket-middleware](https://github.com/YOUR_USERNAME/ticket-middleware) | Node.js proxy that submits tickets to a self-hosted Hesk instance |
-| **Sign-On Page** | [sign-on-page](https://github.com/YOUR_USERNAME/sign-on-page) | RollCall — user registration portal across all services |
-
-> Replace `YOUR_USERNAME` with your GitHub username in the links above.
+| **Playlist Importer** | [playlist-importer](https://github.com/Treyzer567/playlist-importer) | Imports Spotify/YouTube Music playlists into Jellyfin |
+| **Script Runner** | [script-runner](https://github.com/Treyzer567/script-runner) | API for triggering and monitoring media mover scripts |
+| **Ticket Middleware** | [ticket-middleware](https://github.com/Treyzer567/hesk-middleware) | Node.js proxy that submits tickets to a self-hosted Hesk instance |
+| **Sign-On Page** | [sign-on-page](https://github.com/Treyzer567/sign-on-page) | RollCall — user registration portal across all services |
 
 ---
 
 ## Deployment
 
-This repo contains only the frontend (`pages/` and `assets/`). It is served via an **nginx** Docker container. The nginx startup command injects runtime configuration into `config.js`, which the frontend pages read to locate backend services.
+This repo contains only the frontend (`pages/` and `assets/`). `backend/` will need to be pulled from each respective repo. 
 
-See `landing-compose.yml` for the full Docker Compose setup including all backend services.
+See `landing-compose.yml` for the full Docker Compose setup including all backend services. 
 
-### Environment Variables (homarr-pages service)
+To use: download the required files for the tool/page you want to make use of (see releases) > set up the folder structure > update the env variables in the compose > bring up the container (I use Portainer) > navigate to the IP:Port for the main landing-page > enjoy!
 
-| Variable | Description |
-|----------|-------------|
-| `ACCESS_TOKEN` | Hesk API access token |
-| `HESK_URL` | Internal URL of your Hesk instance |
-| `HESK_MIDDLEWARE_URL` | Internal URL of the ticket middleware service |
-| `SIGNON_URL` | Internal URL of the RollCall sign-on frontend |
-| `SCRIPT_RUNNER_URL` | Internal URL of the script runner service |
-| `PLAYLIST_BACKEND_URL` | Internal URL of the playlist importer backend |
+Sign-On Page is a bit special. It is primarily used as it's own page rather than through an iFrame on Homarr but is accessible for easy use locally. In fact, the password protection is disabled locally as well. Due to this, the landing page actually just links to that service on that port rather than loading the html file. 
 
----
-
-## Related Repos
+## Other Projects
 
 | Repo | Description |
 |------|-------------|
-| [sign-on-page](https://github.com/YOUR_USERNAME/sign-on-page) | RollCall user registration portal |
 | [scripts](https://github.com/YOUR_USERNAME/scripts) | Standalone media mover scripts |

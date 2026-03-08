@@ -4,6 +4,8 @@ A self-hosted landing page for managing access to a personal media server suite.
 
 These tools (with the exception of the Sign-On Page) are used through iFrames on Homarr. They can be used directly as their own site or as an iFrame - each one should be fairly flexible.
 
+Apple Music is planned and somewhat added but not usable due to not having an Apple Developer account. If you have one or are able to add/test it - you are more than welcome to. 
+
 ---
 
 ## Pages
